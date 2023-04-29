@@ -3,6 +3,7 @@ game 2048 on c++
 
 This game based on CLI 
 You can run it on compiler  "g++ game.cpp -o game" like this, then "./game"
+if you do not want to download c++ you can open it google colab https://colab.research.google.com/drive/13xwTV91e4TeaYgyiFPZvbj-L2HMgoUl2?usp=sharing
 
 You can manually change grid size to make it harder or easier to play the game.
 
