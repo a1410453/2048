@@ -11,3 +11,5 @@ You can manually change grid size to make it harder or easier to play the game.
 To play you need to Write one of thr capital letters representing: U-up, D-down, L-left, R-right and B stands for bot if you feel tired and lazy to play.
 
 There is scoring system that adds up every time you there are new tiles, and time you spend to play in seconds.
+
+The bot is based on strategy of placing all numbers in one corner.
