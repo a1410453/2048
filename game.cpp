@@ -54,6 +54,7 @@ void generate_tile() {
     grid[x][y] = num;
 }
 
+
 // function to move the tiles in a given direction
 void move_tiles(char dir) {
     // create a temporary grid to store the new positions of the tiles
@@ -132,14 +133,69 @@ void move_tiles(char dir) {
             }
         }
         break;
-}
-// copy the temporary grid back to the original grid
-for (int i = 0; i < SIZE; i++) {
-    for (int j = 0; j < SIZE; j++) {
-        grid[i][j] = temp[i][j];
+    }
+    // copy the temporary grid back to the original grid
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            grid[i][j] = temp[i][j];
+        }
     }
 }
+
+
+bool is_valid_move(char move){
+
+int temp[SIZE][SIZE];
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            temp[i][j] = grid[i][j];
+        }
+    }
+        // move the tiles in the specified direction
+        move_tiles(move);
+        bool valid;
+
+        valid = false;
+            for (int i = 0; i < SIZE; i++) {
+              for (int j = 0; j < SIZE; j++) {
+                  if(grid[i][j] != temp[i][j]){
+                    valid = true;
+                  }
+              }
+            }
+
+                for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            grid[i][j] = temp[i][j];
+        }
+    }
+            return valid;
 }
+
+
+char bot_move(){
+// Define a function to make a move using the "Keep it Cornered" strategy
+
+    char move = 'U';
+    // seed the random number generator
+    std::srand(std::time(nullptr));
+    
+    // generate a random number between 0 and 99
+    int pos = std::rand() % 100;
+    
+    // choose the direction based on the random number
+    if (pos < 50) {
+        return 'U'; // up with 50% probability
+    } else if (pos < 65) {
+        return 'D'; // down with 15% probability
+    } else if (pos < 95) {
+        return 'L'; // left with 30% probability
+    } else {
+        return 'R'; // right with 5% probability
+    }
+
+}
+
 
 
 // main function to play the game
@@ -148,26 +204,70 @@ int main() {
     srand(time(0));
     generate_tile();
     generate_tile();
+    int score = 0;
 
     // print the initial grid
     print_grid();
-    
+    cout << "Enter move (U/D/L/R/B): ";
+    cout << endl;
+
+
+
+    int sum = 0;
+    int prev_sum = 0;
+
     // game loop
     while (true) {
         // get user input
         char input;
-        cout << "Enter move (U/D/L/R): ";
+
         cin >> input;
+        
+        if(input == 'B'){
+            input = bot_move();
+        }
+  
+
+    int temp[SIZE][SIZE];
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            temp[i][j] = grid[i][j];
+        }
+    }
         // move the tiles in the specified direction
         move_tiles(input);
-        // generate a new tile on the grid
-        generate_tile();
-        // print the updated grid
-        print_grid();
+        bool valid;
+
+        valid = false;
+            for (int i = 0; i < SIZE; i++) {
+              for (int j = 0; j < SIZE; j++) {
+                  if(grid[i][j] != temp[i][j]){
+                    valid = true;
+                  }
+              }
+            }
+        
+        if (valid == true){
+          
+            // generate a new tile on the grid
+            generate_tile();
+            // print the updated grid
+            print_grid();
+            cout << "Enter move (U/D/L/R): ";
+            cout << endl;
+        }
+        
+
         // check if the game is over
         bool game_over = true;
+        bool win = false;
         for (int i = 0; i < SIZE; i++) {
                 for (int j = 0; j < SIZE; j++) {
+                if (grid[i][j] == 2048) {
+                    sum = sum + grid[i][j];
+                    win = true;
+                    break;
+                }
                 if (grid[i][j] == 0) {
                     game_over = false;
                     break;
@@ -185,9 +285,17 @@ int main() {
             break;
             }
         }
+        score = score + sum - prev_sum;// recording only new values
+        prev_sum = sum;
         if (game_over) {
-        cout << "Game over!" << endl;
-        break;
+          cout << "Game over!" << endl;
+          cout << "Your score: "<< score << endl;
+          break;
+        }
+        if (win) {
+          cout << "You won!" << endl;
+          cout << "Your score: "<< score << endl;
+          break;
         }
         }
     return 0;
